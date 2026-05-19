@@ -1,0 +1,783 @@
+---
+title: "Women's age and marriage: the trend throughout the 19th century Denmark"
+author: "Ida-Bella Bach Greve & Kristine Xenia Storgaard Soendberg"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+
+setwd("~/Desktop/DAM")
+```
+
+# Introduction
+
+This report analyzes census data from 1801, 1834, 1845, and 1860.
+The focus is on age, gender, and marital status distributions.
+
+---
+
+# Kvinder (Women)
+
+## Women aged 20–30
+
+# 1801
+
+```{r women-1801-young}
+data_1801_young <- read_csv("census-1801-normalized.csv")
+
+clean_data_1801_young <- data_1801_young %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    alder < 31,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "mand"
+  )
+
+# Histogram
+ggplot(clean_data_1801_young, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "1801: Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+```{r women-1801-pie}
+clean_data_1801_young %>%
+  count(civilstand) %>%
+  ggplot(aes(x = "", y = n, fill = civilstand)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(
+    aes(label = paste0(round(n / sum(n) * 100, 1), "%")),
+    position = position_stack(vjust = 0.5)
+  ) +
+  theme_void() +
+  labs(
+    title = "1801: Marital Status Distribution",
+    fill = "Marital Status"
+  )
+```
+
+---
+
+# 1834
+
+```{r women-1834-young}
+data_1834_young <- read_csv("census-1834-normalized.csv")
+
+clean_data_1834_young <- data_1834_young %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    alder < 31,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "mand"
+  )
+
+# Histogram
+ggplot(clean_data_1834_young, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "1834: Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+```{r women-1834-pie}
+clean_data_1834_young %>%
+  count(civilstand) %>%
+  ggplot(aes(x = "", y = n, fill = civilstand)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(
+    aes(label = paste0(round(n / sum(n) * 100, 1), "%")),
+    position = position_stack(vjust = 0.5)
+  ) +
+  theme_void() +
+  labs(
+    title = "1834: Marital Status Distribution",
+    fill = "Marital Status"
+  )
+```
+
+---
+
+# 1845
+
+```{r women-1845-young}
+data_1845_young <- read_csv("census-1845-normalized.csv")
+
+clean_data_1845_young <- data_1845_young %>%
+  filter(
+    !is.na(age),
+    age > 19,
+    age < 31,
+    !is.na(marital_status),
+    marital_status != "",
+    !is.na(gender),
+    gender != "mand"
+  )
+
+# Histogram
+ggplot(clean_data_1845_young, aes(x = age, fill = marital_status)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "1845: Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+```{r women-1845-pie}
+clean_data_1845_young %>%
+  count(marital_status) %>%
+  ggplot(aes(x = "", y = n, fill = marital_status)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(
+    aes(label = paste0(round(n / sum(n) * 100, 1), "%")),
+    position = position_stack(vjust = 0.5)
+  ) +
+  theme_void() +
+  labs(
+    title = "1845: Marital Status Distribution",
+    fill = "Marital Status"
+  )
+```
+
+---
+
+# 1860
+
+```{r women-1860-young}
+data_1860_young <- read_csv("census-1860-normalized.csv")
+
+clean_data_1860_young <- data_1860_young %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    alder < 31,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "mand"
+  )
+
+# Histogram
+ggplot(clean_data_1860_young, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "1860: Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+```{r women-1860-pie}
+clean_data_1860_young %>%
+  count(civilstand) %>%
+  ggplot(aes(x = "", y = n, fill = civilstand)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(
+    aes(label = paste0(round(n / sum(n) * 100, 1), "%")),
+    position = position_stack(vjust = 0.5)
+  ) +
+  theme_void() +
+  labs(
+    title = "1860: Marital Status Distribution",
+    fill = "Marital Status"
+  )
+```
+
+---
+
+## Women aged 30–40
+
+# 1801
+
+```{r women-1801-ext}
+data_1801_ext <- read_csv("census-1801-normalized.csv")
+
+clean_data_1801_ext <- data_1801_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 29,
+    !is.na(alder),
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "mand"
+  )
+
+# Histogram
+ggplot(clean_data_1801_ext, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+```{r women-1801-pie-ext}
+clean_data_1801_ext %>%
+  count(civilstand) %>%
+  ggplot(aes(x = "", y = n, fill = civilstand)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(
+    aes(label = paste0(round(n / sum(n) * 100, 1), "%")),
+    position = position_stack(vjust = 0.5)
+  ) +
+  theme_void() +
+  labs(
+    title = "Marital Status Distribution",
+    fill = "Marital Status"
+  )
+```
+
+---
+
+# 1834
+
+```{r women-1834-ext}
+data_1834_ext <- read_csv("census-1834-normalized.csv")
+
+clean_data_1834_ext <- data_1834_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 29,
+    !is.na(alder),
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "mand"
+  )
+
+# Histogram
+ggplot(clean_data_1834_ext, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+```{r women-1834-pie-ext}
+clean_data_1834_ext %>%
+  count(civilstand) %>%
+  ggplot(aes(x = "", y = n, fill = civilstand)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(
+    aes(label = paste0(round(n / sum(n) * 100, 1), "%")),
+    position = position_stack(vjust = 0.5)
+  ) +
+  theme_void() +
+  labs(
+    title = "Marital Status Distribution",
+    fill = "Marital Status"
+  )
+```
+
+---
+
+# 1845
+
+```{r women-1845-ext}
+data_1845_ext <- read_csv("census-1845-normalized.csv")
+
+clean_data_1845_ext <- data_1845_ext %>%
+  filter(
+    !is.na(age),
+    age > 29,
+    !is.na(age),
+    age < 41,
+    !is.na(marital_status),
+    marital_status != "",
+    !is.na(gender),
+    gender != "mand"
+  )
+
+
+# Histogram
+ggplot(clean_data_1845_ext, aes(x = age, fill = marital_status)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+```{r women-1845-pie-ext}
+clean_data_1845_ext %>%
+  count(marital_status) %>%
+  ggplot(aes(x = "", y = n, fill = marital_status)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(
+    aes(label = paste0(round(n / sum(n) * 100, 1), "%")),
+    position = position_stack(vjust = 0.5)
+  ) +
+  theme_void() +
+  labs(
+    title = "Marital Status Distribution",
+    fill = "Marital Status"
+  )
+
+```
+
+---
+
+# 1860
+
+```{r women-1860-ext}
+data_1860_ext <- read_csv("census-1860-normalized.csv")
+
+clean_data_1860_ext <- data_1860_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 29,
+    !is.na(alder),
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "mand"
+  )
+
+# Histogram
+ggplot(clean_data_1860_ext, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+```{r women-1860-pie-ext}
+clean_data_1860_ext %>%
+  count(civilstand) %>%
+  ggplot(aes(x = "", y = n, fill = civilstand)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(
+    aes(label = paste0(round(n / sum(n) * 100, 1), "%")),
+    position = position_stack(vjust = 0.5)
+  ) +
+  theme_void() +
+  labs(
+    title = "Marital Status Distribution",
+    fill = "Marital Status"
+  )
+```
+
+---
+
+## Women aged 20–40
+
+# 1801
+
+```{r women-1801-plus}
+data_1860_ext <- read_csv("census-1860-normalized.csv")
+
+clean_data_1801_kplus <- data_1801_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    !is.na(alder),
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "mand"
+  )
+
+# Histogram
+ggplot(clean_data_1801_kplus, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# 1834
+
+```{r women-1834-plus}
+data_1860_ext <- read_csv("census-1860-normalized.csv")
+
+clean_data_1834_kplus <- data_1834_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    !is.na(alder),
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "mand"
+  )
+
+# Histogram
+ggplot(clean_data_1834_kplus, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# 1845
+
+```{r women-1845-plus}
+data_1860_ext <- read_csv("census-1860-normalized.csv")
+
+clean_data_1845_kplus <- data_1845_ext %>%
+  filter(
+    !is.na(age),
+    age > 19,
+    !is.na(age),
+    age < 41,
+    !is.na(marital_status),
+    marital_status != "",
+    !is.na(gender),
+    gender != "mand"
+  )
+
+# Histogram
+ggplot(clean_data_1845_kplus, aes(x = age, fill = marital_status)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# 1860
+
+```{r women-1860-plus}
+data_1860_ext <- read_csv("census-1860-normalized.csv")
+
+clean_data_1860_kplus <- data_1860_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    !is.na(alder),
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "mand"
+  )
+
+# Histogram
+ggplot(clean_data_1860_kplus, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# Mænd (Men) 
+
+## Men aged 20–40
+
+# 1801
+
+```{r men-1801-plus}
+data_1860_ext <- read_csv("census-1860-normalized.csv")
+
+clean_data_1801_mplus <- data_1801_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    !is.na(alder),
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "kvinde"
+  )
+
+# Histogram
+ggplot(clean_data_1801_mplus, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# 1834
+
+```{r men-1834-plus}
+data_1860_ext <- read_csv("census-1860-normalized.csv")
+
+clean_data_1834_mplus <- data_1834_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    !is.na(alder),
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "kvinde"
+  )
+
+# Histogram
+ggplot(clean_data_1834_mplus, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# 1845
+
+```{r men-1845-plus}
+data_1845_ext <- read_csv("census-1845-normalized.csv")
+
+clean_data_1845_mplus <- data_1845_ext %>%
+  filter(
+    !is.na(age),
+    age > 19,
+    !is.na(age),
+    age < 41,
+    !is.na(marital_status),
+    marital_status != "",
+    !is.na(gender),
+    gender != "kvinde"
+  )
+
+# Histogram
+ggplot(clean_data_1845_mplus, aes(x = age, fill = marital_status)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# 1860
+
+```{r men-1860-plus}
+data_1860_ext <- read_csv("census-1860-normalized.csv")
+
+clean_data_1860_mplus <- data_1860_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    !is.na(alder),
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != "kvinde"
+  )
+
+# Histogram
+ggplot(clean_data_1860_mplus, aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  labs(
+    title = "Age and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# Men and Women Comparison
+
+## 1801
+
+```{r both-1801}
+clean_data_1801_extplus <- data_1801_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != ""
+  )
+
+# Graph
+ggplot(clean_data_1801_extplus,
+       aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "stack") +
+  facet_wrap(~ koen) +
+  labs(
+    title = "1801: Age, Gender and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## 1834
+
+```{r both-1834}
+clean_data_1834_extplus <- data_1834_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != ""
+  )
+
+# Graph
+ggplot(clean_data_1834_extplus,
+       aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "stack") +
+  facet_wrap(~ koen) +
+  labs(
+    title = "1834: Age, Gender and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## 1845
+
+```{r both-1845}
+clean_data_1845_extplus <- data_1845_ext %>%
+  filter(
+    !is.na(age),
+    age > 19,
+    age < 41,
+    !is.na(marital_status),
+    marital_status != "",
+    !is.na(gender),
+    gender != ""
+  )
+
+# Graph
+ggplot(clean_data_1845_extplus,
+       aes(x = age, fill = marital_status)) +
+  geom_histogram(binwidth = 2, position = "stack") +
+  facet_wrap(~ gender) +
+  labs(
+    title = "1845: Age, Gender and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## 1860
+
+```{r both-1860}
+clean_data_1860_extplus <- data_1860_ext %>%
+  filter(
+    !is.na(alder),
+    alder > 19,
+    alder < 41,
+    !is.na(civilstand),
+    civilstand != "",
+    !is.na(koen),
+    koen != ""
+  )
+
+# Graph
+ggplot(clean_data_1860_extplus,
+       aes(x = alder, fill = civilstand)) +
+  geom_histogram(binwidth = 2, position = "stack") +
+  facet_wrap(~ koen) +
+  labs(
+    title = "1860: Age, Gender and Marital Status",
+    x = "Age",
+    y = "Count",
+    fill = "Marital Status"
+  ) +
+  theme_minimal()
+```
