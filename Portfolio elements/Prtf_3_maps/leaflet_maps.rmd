@@ -1,0 +1,351 @@
+---
+title: "Getting Started with Leaflet"
+author: "Frida Lützow Kirk, Ida-Bella Bach Greve & Kristine Xenia Storgaard Søndberg"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Install Required Packages
+
+```{r install-packages, eval=FALSE}
+install.packages("leaflet")
+install.packages("htmltools")
+install.packages("htmlwidgets")
+install.packages("tidyverse")
+install.packages("googlesheets4")
+```
+
+## Load Libraries
+
+```{r setup}
+library(leaflet)
+library(htmltools)
+library(htmlwidgets)
+library(tidyverse)
+library(googlesheets4)
+```
+
+---
+
+# Example 1: Create a Leaflet Map of Europe
+
+Learn to create a map by plotting three point markers called Robin, Jakub, and Jannes.
+
+```{r example1}
+# Create labels for your points
+labels <- c("Robin", "Jakub", "Jannes")
+
+# Create the map
+leaflet() %>%
+  addProviderTiles("Esri.WorldPhysical") %>%
+  addAwesomeMarkers(
+    lng = c(-3, 23, 11),
+    lat = c(52, 53, 49),
+    popup = labels
+  )
+```
+
+---
+
+# Example 2: Create a Leaflet Map of Sydney
+
+The `setView()` function helps focus and zoom the map to a specific area.
+
+```{r example2}
+leaflet() %>%
+  addTiles() %>%
+  addProviderTiles(
+    "Esri.WorldImagery",
+    options = providerTileOptions(opacity = 0.5)
+  ) %>%
+  setView(lng = 151.105006, lat = -33.8767231, zoom = 12)
+```
+
+## Question 1
+
+What is the order of longitude and latitude in the `setView()` function?
+
+### Answer
+
+1. longtitude, 2. latitude
+
+---
+
+# Multiple Background Layers
+
+```{r europe-layers}
+leaflet() %>%
+  addTiles() %>%
+  setView(lng = 2.34, lat = 48.85, zoom = 5) %>%
+  addProviderTiles("Esri.WorldPhysical", group = "Physical") %>%
+  addProviderTiles("Esri.WorldImagery", group = "Aerial") %>%
+  addProviderTiles("MtbMap", group = "Geo") %>%
+  addLayersControl(
+    baseGroups = c("Geo", "Aerial", "Physical"),
+    options = layersControlOptions(collapsed = F)
+  )
+```
+
+## Question 2
+
+How does the map above change if you replace the T in the last line of code above with F?
+
+### Answer
+
+The layer control menu changes from being collapsed (hidden) to being expanded (visible) by default.
+
+---
+
+# Example 3: Sydney Harbour Display with Multiple Layers
+
+## Step 1: Create a Base Map
+
+```{r sydney-base}
+l_aus <- leaflet() %>%
+  setView(151.2339084, -33.85089, zoom = 13)
+
+l_aus
+```
+
+## Step 2: Load Esri Background Layers
+
+```{r esri-layers}
+esri <- grep("^Esri", providers, value = TRUE)
+esri
+```
+
+```{r add-esri-layers}
+for (provider in esri) {
+  l_aus <- l_aus %>%
+    addProviderTiles(provider, group = provider)
+}
+
+l_aus
+```
+
+## Step 3: Build the Final Sydney Map
+
+```{r aus-map}
+AUSmap <- l_aus %>%
+  addLayersControl(
+    baseGroups = names(esri),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  addMiniMap(
+    tiles = esri[[1]],
+    toggleDisplay = TRUE,
+    position = "bottomright"
+  ) %>%
+  addMeasure(
+    position = "bottomleft",
+    primaryLengthUnit = "meters",
+    primaryAreaUnit = "sqmeters",
+    activeColor = "#3D535D",
+    completedColor = "#7D4479"
+  ) %>%
+  htmlwidgets::onRender(
+    "
+    function(el, x) {
+      var myMap = this;
+      myMap.on('baselayerchange', function (e) {
+        myMap.minimap.changeLayer(L.tileLayer.provider(e.name));
+      })
+    }
+    "
+  ) %>%
+  addControl("", position = "topright")
+
+AUSmap
+```
+
+## Save the Map
+
+```{r save-aus-map, eval=FALSE}
+saveWidget(AUSmap, "AUSmap.html", selfcontained = TRUE)
+```
+
+---
+
+# Task 1: Create a Danish Equivalent of AUSmap
+
+```{r danmap}
+l_dk <- leaflet() %>%
+  setView(10.204221884316414, 56.16067847421799, zoom = 15)
+
+for (provider in esri) {
+  l_dk <- l_dk %>%
+    addProviderTiles(provider, group = provider)
+}
+
+DANmap <- l_dk %>%
+  addLayersControl(
+    baseGroups = names(esri),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  addMiniMap(
+    tiles = esri[[1]],
+    toggleDisplay = TRUE,
+    position = "bottomright"
+  ) %>%
+  addMeasure(
+    position = "bottomleft",
+    primaryLengthUnit = "meters",
+    primaryAreaUnit = "sqmeters",
+    activeColor = "#3D535D",
+    completedColor = "#7D4479"
+  ) %>%
+  htmlwidgets::onRender(
+    "
+    function(el, x) {
+      var myMap = this;
+      myMap.on('baselayerchange', function (e) {
+        myMap.minimap.changeLayer(L.tileLayer.provider(e.name));
+      })
+    }
+    "
+  ) %>%
+  addControl("", position = "topright")
+
+DANmap
+```
+
+## Save DANmap
+
+```{r save-danmap, eval=FALSE}
+saveWidget(DANmap, "DANmap.html", selfcontained = TRUE)
+```
+
+---
+
+# Add Data to Leaflet
+
+## Create Coordinate Data
+
+Go to:
+
+- https://bit.ly/CreateCoordinates1
+
+Enter coordinates of your favorite leisure places in Denmark.
+
+## Read the Google Sheet into R
+
+```{r deauth}
+gs4_deauth()
+```
+
+```{r read-sheet}
+places <- read_sheet(
+  "https://docs.google.com/spreadsheets/d/1PlxsPElZML8LZKyXbqdAYeQCDIvDps2McZx1cTVWSzI/edit#gid=124710918",
+  col_types = "cccnncnc",
+  range = "DAM2026"
+)
+
+places
+```
+
+## Check the Data
+
+```{r check-data}
+glimpse(places)
+
+places %>%
+  filter(!is.na(Longitude)) %>%
+  filter(!is.na(Latitude))
+```
+
+## Question 3
+
+Are the Latitude and Longitude columns present? Do they contain numeric decimal degrees?
+
+### Answer
+
+Yes, there are numeric decimal degree coordinates because the filter function confirms valid longitude and latitude values.
+
+---
+
+# Create a Basic Student Map
+
+```{r student-map}
+studentmap <- leaflet() %>%
+  addTiles() %>%
+  addMarkers(
+    lng = places$Longitude,
+    lat = places$Latitude,
+    popup = paste(places$Description, "<br>", places$Type)
+  )
+
+studentmap
+```
+
+## Save Student Map
+
+```{r save-studentmap, eval=FALSE}
+saveWidget(studentmap, "studentmap.html", selfcontained = TRUE)
+```
+
+---
+
+# Task 2: Add Google Sheet Data to DANmap
+
+```{r task2}
+task2map <- DANmap %>%
+  addMarkers(
+    lng = places$Longitude,
+    lat = places$Latitude,
+    popup = paste(places$Description, "<br>", places$Type)
+  )
+
+task2map
+```
+
+---
+
+# Task 3: Cluster the Points in Leaflet
+
+```{r task3}
+task3map <- DANmap %>%
+  addMarkers(
+    lng = places$Longitude,
+    lat = places$Latitude,
+    popup = paste(places$Description, "<br>", places$Type),
+    clusterOptions = markerClusterOptions()
+  )
+
+task3map
+```
+
+---
+
+# Task 4: Compare Clustered vs Non-Clustered Maps
+
+## Answer
+
+The clustering effect creates a cleaner overview of where the hotspots are located, while the individual markers provide more precise locations immediately.
+
+---
+
+# Task 5: Display Notes and Classifications in the Map
+
+You can include additional columns in the popup text.
+
+```{r task5}
+DANmap %>%
+  addMarkers(
+    lng = places$Longitude,
+    lat = places$Latitude,
+    popup = paste(
+      places$Description,
+      "<br>",
+      places$Type,
+      "<br>",
+      places$Notes
+    )
+  )
+```
+
+---
+
+# Congratulations
+
+You have completed the Leaflet workshop.
+
